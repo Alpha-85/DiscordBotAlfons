@@ -23,7 +23,8 @@ public class RecipeCommandModule : BaseCommandModule
         {
             var personalMessage = await context.Member.CreateDmChannelAsync();
 
-            await personalMessage.SendMessageAsync("Meal types are: beef,pork,chicken,vegetarian,dessert or breakfast");
+            await personalMessage.SendMessageAsync(EmbedExtensions.GetPersonalMessageHelpEmbed(
+                "example: !recipe beef", "Meal types are: beef,pork,chicken,vegetarian,dessert or breakfast "));
         }
 
         var auth = await RecipeService.Authenticate();
@@ -32,12 +33,12 @@ public class RecipeCommandModule : BaseCommandModule
         {
             "Breakfast" => "Breakfast",
             "Dessert" => "Dessert",
-            _ => preference
+            _ => "Lunch"
         };
 
         var response = await RecipeService.GetRandomRecipe(auth.Token, mealType, preference);
 
-        await context.RespondAsync(EmbedExtensions.GetRecipeEmbed(response.Title, response.Image, response.SourceUrl)).ConfigureAwait(false);
+        await context.RespondAsync(EmbedExtensions.GetDiscordRecipeEmbed(response.Title, response.Image, response.SourceUrl)).ConfigureAwait(false);
     }
 
 }
